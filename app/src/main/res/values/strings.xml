@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name" translatable="false">Mastermind</string>
+    <string name="cancel">Cancel</string>
+    <string name="game_over">Game over</string>
+    <string name="ok">OK</string>
+    <string name="reload_confirmation">Start a new game?</string>
+    <string name="reveal_peg">Reveal this peg?</string>
+    <string name="settings_allow_duplicates">Allow duplicate colors in target pattern</string>
+    <string name="settings_color_blind_mode">Color blind mode</string>
+    <string name="settings_number_of_colors">Number of colors</string>
+    <string name="settings_number_of_guesses">Number of guesses</string>
+    <string name="settings_number_of_pegs">Number of pegs</string>
+    <string name="well_done">Well done!</string>
+    <string name="exact">EXACT</string>
+    <string name="misplaced">MISPLACED</string>
+</resources>

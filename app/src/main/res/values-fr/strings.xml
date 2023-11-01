@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cancel">Annuler</string>
+    <string name="game_over">Perdu</string>
+    <string name="ok">OK</string>
+    <string name="reload_confirmation">Démarrer une nouvelle partie ?</string>
+    <string name="reveal_peg">Afficher ce pion ?</string>
+    <string name="settings_allow_duplicates">Autoriser les couleurs en double</string>
+    <string name="settings_color_blind_mode">Mode « daltonien »</string>
+    <string name="settings_number_of_colors">Nombre de couleurs</string>
+    <string name="settings_number_of_guesses">Nombre d\'essais</string>
+    <string name="settings_number_of_pegs">Nombre de pions</string>
+    <string name="well_done">Bien joué !</string>
+    <string name="exact">EXACT</string>
+    <string name="misplaced">MAL PLACÉ</string>
+</resources>
