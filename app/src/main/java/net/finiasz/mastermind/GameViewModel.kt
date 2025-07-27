@@ -1,5 +1,8 @@
 package net.finiasz.mastermind
 
+import android.content.Context
+import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,6 +13,19 @@ import java.util.Random
 class GameViewModel : ViewModel() {
     private val _state = MutableStateFlow(GameState())
     val state : StateFlow<GameState> = _state.asStateFlow()
+
+    fun save(context: Context) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit {
+            putString("game_state", _state.value.serialize())
+        }
+    }
+
+    fun restore(context: Context) {
+        val gameState: GameState? = PreferenceManager.getDefaultSharedPreferences(context).getString("game_state", null)?.deserializeGameState()
+        if (gameState?.won == Won.NOT_WON) {
+            _state.value = gameState
+        }
+    }
 
     fun reset(pegCount: Int, colorCount: Int, allowDuplicates: Boolean, guessCount: Int) {
         if (pegCount < 1 || colorCount < 1 || guessCount < 1) {

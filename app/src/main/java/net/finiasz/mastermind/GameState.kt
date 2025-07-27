@@ -1,5 +1,9 @@
 package net.finiasz.mastermind
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.databind.ObjectMapper
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class GameState(
     val target : List<Int>? = null,
     val revealedTargets : MutableList<Boolean> = MutableList(0) { false },
@@ -17,23 +21,31 @@ data class GameState(
             if (target == null || won != Won.NOT_WON) {
                 return false
             }
-            return guesses.get(validatedCount).contains(null).not()
+            return guesses[validatedCount].contains(null).not()
         }
 
-    val firstRowColorCount: Int
-        get() {
-            return when(colorCount) {
-                4 -> 2
-                5 -> 3
-                6 -> 4
-                7 -> 4
-                8 -> 5
-                9 -> 5
-                else -> 6
+    fun serialize(): String? {
+        return runCatching {
+            ObjectMapper().writeValueAsString(this)
+        }.getOrNull()
+    }
+
+    companion object {
+        fun of(serialized: String): GameState {
+            return runCatching {
+                ObjectMapper().readValue(serialized, GameState::class.java)
+            }.getOrElse {
+                GameState()
             }
         }
+    }
 }
 
+fun String?.deserializeGameState(): GameState? {
+    return this?.let {
+        GameState.of(it)
+    }
+}
 
 enum class Won {
     NOT_WON,

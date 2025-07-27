@@ -8,17 +8,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,10 +33,14 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -47,10 +54,14 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsDialog(settingsManager: SettingsManager, dismissCallback: () -> Unit) {
-    AlertDialog(
+fun SettingsDialog(
+    settingsManager: SettingsManager,
+    dismissCallback: (changed: Boolean) -> Unit
+) {
+    var changed by remember { mutableStateOf(false) }
+    BasicAlertDialog(
         onDismissRequest = {
-            dismissCallback.invoke()
+            dismissCallback.invoke(changed)
         },
         properties = DialogProperties(usePlatformDefaultWidth = false),
         modifier = Modifier
@@ -87,23 +98,19 @@ fun SettingsDialog(settingsManager: SettingsManager, dismissCallback: () -> Unit
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        Slider(
+                        MySlider(
                             modifier = Modifier.fillMaxWidth(),
-                            value = (settingsManager.pegCount.value - 4) / 4f,
+                            value = (settingsManager.pegCount.intValue - 4) / 4f,
                             onValueChange = {
+                                changed = true
                                 settingsManager.setPegCount((it * 4 + 4).roundToInt())
                             },
                             onValueChangeFinished = {
-                                if (settingsManager.pegCount.value > settingsManager.colorCount.value) {
-                                    settingsManager.setColorCount(settingsManager.pegCount.value)
+                                if (settingsManager.pegCount.intValue > settingsManager.colorCount.intValue) {
+                                    settingsManager.setColorCount(settingsManager.pegCount.intValue)
                                 }
                             },
                             steps = 3,
-                            colors = SliderDefaults.colors(
-                                activeTickColor = MaterialTheme.colorScheme.outline,
-                                inactiveTickColor = MaterialTheme.colorScheme.outline,
-                                inactiveTrackColor = MaterialTheme.colorScheme.outline
-                            )
                         )
                     }
                     Box(
@@ -119,7 +126,7 @@ fun SettingsDialog(settingsManager: SettingsManager, dismissCallback: () -> Unit
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = settingsManager.pegCount.value.toString(),
+                            text = settingsManager.pegCount.intValue.toString(),
                             fontSize = 42.sp,
                         )
                     }
@@ -141,23 +148,19 @@ fun SettingsDialog(settingsManager: SettingsManager, dismissCallback: () -> Unit
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        Slider(
+                        MySlider(
                             modifier = Modifier.fillMaxWidth(),
-                            value = (settingsManager.colorCount.value - 4) / 6f,
+                            value = (settingsManager.colorCount.intValue - 4) / 6f,
                             onValueChange = {
+                                changed = true
                                 settingsManager.setColorCount((it * 6 + 4).roundToInt())
                             },
                             onValueChangeFinished = {
-                                if (settingsManager.pegCount.value > settingsManager.colorCount.value) {
-                                    settingsManager.setPegCount(settingsManager.colorCount.value)
+                                if (settingsManager.pegCount.intValue > settingsManager.colorCount.intValue) {
+                                    settingsManager.setPegCount(settingsManager.colorCount.intValue)
                                 }
                             },
                             steps = 5,
-                            colors = SliderDefaults.colors(
-                                activeTickColor = MaterialTheme.colorScheme.outline,
-                                inactiveTickColor = MaterialTheme.colorScheme.outline,
-                                inactiveTrackColor = MaterialTheme.colorScheme.outline
-                            )
                         )
                     }
                     Box(
@@ -173,7 +176,7 @@ fun SettingsDialog(settingsManager: SettingsManager, dismissCallback: () -> Unit
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = settingsManager.colorCount.value.toString(),
+                            text = settingsManager.colorCount.intValue.toString(),
                             fontSize = 42.sp,
                         )
                     }
@@ -194,18 +197,14 @@ fun SettingsDialog(settingsManager: SettingsManager, dismissCallback: () -> Unit
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        Slider(
+                        MySlider(
                             modifier = Modifier.fillMaxWidth(),
-                            value = (settingsManager.guessCount.value - 5) / 15f,
+                            value = (settingsManager.guessCount.intValue - 5) / 15f,
                             onValueChange = {
+                                changed = true
                                 settingsManager.setGuessCount((it * 15 + 5).roundToInt())
                             },
                             steps = 14,
-                            colors = SliderDefaults.colors(
-                                activeTickColor = MaterialTheme.colorScheme.outline,
-                                inactiveTickColor = MaterialTheme.colorScheme.outline,
-                                inactiveTrackColor = MaterialTheme.colorScheme.outline
-                            )
                         )
                     }
                     Box(
@@ -221,7 +220,7 @@ fun SettingsDialog(settingsManager: SettingsManager, dismissCallback: () -> Unit
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = settingsManager.guessCount.value.toString(),
+                            text = settingsManager.guessCount.intValue.toString(),
                             fontSize = 42.sp,
                         )
                     }
@@ -246,7 +245,10 @@ fun SettingsDialog(settingsManager: SettingsManager, dismissCallback: () -> Unit
                 ) {
                     Switch(
                         checked = settingsManager.allowDuplicates.value,
-                        onCheckedChange = { settingsManager.setAllowDuplicates(it) },
+                        onCheckedChange = {
+                            changed = true
+                            settingsManager.setAllowDuplicates(it)
+                        },
                         modifier = Modifier.padding(end = 16.dp),
                         colors = SwitchDefaults.colors(checkedTrackColor = MaterialTheme.colorScheme.outlineVariant),
                         interactionSource = interactionSourceDuplicates
@@ -278,7 +280,10 @@ fun SettingsDialog(settingsManager: SettingsManager, dismissCallback: () -> Unit
                 ) {
                     Switch(
                         checked = settingsManager.colorBlind.value,
-                        onCheckedChange = { settingsManager.setColorBlind(it) },
+                        onCheckedChange = {
+                            changed = true
+                            settingsManager.setColorBlind(it)
+                        },
                         modifier = Modifier.padding(end = 16.dp),
                         colors = SwitchDefaults.colors(checkedTrackColor = MaterialTheme.colorScheme.outlineVariant),
                         interactionSource = interactionSourceColorBlind
@@ -302,7 +307,7 @@ fun SettingsDialog(settingsManager: SettingsManager, dismissCallback: () -> Unit
             ) {
                 Button(
                     onClick = {
-                        dismissCallback.invoke()
+                        dismissCallback.invoke(changed)
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                 ) {
@@ -315,6 +320,37 @@ fun SettingsDialog(settingsManager: SettingsManager, dismissCallback: () -> Unit
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MySlider(
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+    onValueChangeFinished: (() -> Unit)? = null,
+    steps: Int,
+) {
+    Slider(
+        modifier = modifier,
+        value = value,
+        onValueChange = onValueChange,
+        onValueChangeFinished = onValueChangeFinished,
+        steps = steps,
+        thumb = {
+            Spacer(
+                Modifier
+                    .size(24.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary)
+            )
+        },
+        colors = SliderDefaults.colors(
+            activeTickColor = Color.Transparent,
+            inactiveTickColor = Color.Transparent,
+            inactiveTrackColor = MaterialTheme.colorScheme.outline
+        )
+    )
 }
 
 @Preview
