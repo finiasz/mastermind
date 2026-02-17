@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Mastermind</string>
+    <string name="app_name" translatable="false">Code breaker master</string>
     <string name="cancel">Cancel</string>
     <string name="game_over">Game over</string>
     <string name="ok">OK</string>
